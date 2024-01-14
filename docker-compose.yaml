@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    volumes:
+      - /Users/kanykei/Desktop/ft_ping/app:/app
+    command: tail -f /dev/null
+    restart: unless-stopped
