@@ -6,7 +6,7 @@
 /*   By: kanykei <kanykei@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/11 11:19:58 by kanykei           #+#    #+#             */
-/*   Updated: 2024/01/14 20:18:44 by kanykei          ###   ########.fr       */
+/*   Updated: 2024/01/21 21:18:27 by kanykei          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,66 +29,78 @@
 # include <netinet/ip_icmp.h>
 # include <errno.h>
 # include <math.h>
+# include <limits.h>
 
-#define WRONG_INPUT "Error: Wrong input. Please try: ./ft_ping address/hostname"
-#define SOCKET_ERROR "Error: Failed to create a socket"
+# define WRONG_INPUT "usage error: Destination address required"
+# define SOCKET_ERROR "Failed to create a socket"
+# define WRONG_IP_PROTOCOL "Received wrong ip protocol"
+# define TIME_EXCEEDED "ttl exceeded"
+# define HOST_ERROR "host error"
+
+
+// ip header (20) + icmp header (8) + data (56) = 74 bytes.
+#define IP_TTL_VALUE 64
+#define IP_HDR_SIZE (sizeof(struct iphdr))
+#define ICMP_HDR_SIZE (sizeof(struct icmphdr)) 
+#define ICMP_DATA_SIZE 56
+#define MAX_PACKET_SIZE 1500
+
+/* ICMP Header:
+- Type (1 byte)
+- Code (1 byte)
+- Checksum (2 bytes)
+- Identifier (2 bytes)
+- Sequence Number (2 bytes) 
+*/
 
 typedef struct s_host {
     char    *hostname;
+    char    *server_hostname;
     struct  sockaddr_in inet_addr;
     char    ip_addr[INET_ADDRSTRLEN];
 } t_host;
 
+typedef struct s_options {
+    int    verbose;
+} t_options;
+
 typedef struct s_ping {
-    int             raw_socket;
+    int             socket;
     t_host          hostinfo;
+    t_options       opts;
     int             seq;
     uint16_t        cpid;
     double          interval;
-    struct timeval  start_time;
-    struct timeval  end_time;
-} t_ping;
-
-typedef struct s_stats {
-    char            *hostname;
+    struct timeval  start;
+    struct timeval  start_rtt;
+    struct timeval  end_rtt;
+    double          rtt;
     int             sent;
     int             received;
-    struct timeval  start;
     double          min;
     double          max;
-    double          total;
-} t_stats;
+    double          sum;
+    double          sum2;
+} t_ping;
 
-typedef struct		s_packet {
-	struct icmp     icmp_header;
-	char			payload[36];
-}   t_packet;
+extern int ping_end;
 
-typedef struct  s_response {
-    struct msghdr   msg_header;
-    struct iovec    iov;
-    char            msg[84];
-}   t_response;
-
-extern  t_stats g_ping_stats;
-
-void        input_check(int num, char **arr, t_ping *p);
-void        create_raw_socket(t_ping *p);
-void        get_hostname_address_info(t_ping *p);
-void        ping(t_ping *p);
-
-void        log_error(char *err);
-void        log_info(char *str);
-void        log_header(t_ping *p);
-void        log_response(t_ping *p, t_response *resp, int bytes, uint16_t seq);
-void        log_stats(int sig);
-
-void        timestamp(struct timeval *tv);
-void        wait_interval(t_ping *p);
-double      get_round_trip_time(struct timeval start, struct timeval end);
-void        save_time_stats(double time);
-double      mdev();
-
+void            parse_input(int argc, char **argv, t_ping *p);
+void            init_stats(t_ping *p);
+void            init_ping(t_ping *p);
+void            ping(t_ping *p);
+int             valid_response(void *resp, t_ping *p); 
+void            wsleep(t_ping *p);
+double          get_round_trip_time(struct timeval start, struct timeval end);
+void            save_time_stats(t_ping *p);
+double          double_sqrt(double a);
+unsigned short  checksum(void *header, int len);
+void            log_error(const char *err);
+void            log_info(const char *str);
+void            log_header(t_ping *p);
+void            log_stats(t_ping *p);
+void            log_response(t_ping *p, void *msg, int bytes);
+void            log_help();
 
 
 

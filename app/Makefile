@@ -6,7 +6,7 @@
 #    By: kanykei <kanykei@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/11 11:19:19 by kanykei           #+#    #+#              #
-#    Updated: 2024/01/14 17:28:00 by kanykei          ###   ########.fr        #
+#    Updated: 2024/01/21 19:50:41 by kanykei          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,12 +17,12 @@ NAME		:= ft_ping
 
 VPATH		:= src
 
-SRC			:= main.c parser.c logger.c socket.c ping.c time.c
+SRC			:= main.c utils.c logger.c socket.c ping.c time.c parser.c
 
 # ================================ Flags ===================================== #
 OBJ			:= $(addprefix obj/,$(notdir $(SRC:.c=.o)))
 CC			:= gcc
-CFLAGS 		:= #-Wall -Wextra -Werror #-fsanitize=address
+CFLAGS 		:= -Wall -Wextra -Werror #-fsanitize=address
 
 # ============================== Libraries ==================================== #
 INCFL		:=	-I./include -I./libs/libft

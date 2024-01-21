@@ -1,25 +1,24 @@
-#include "ft_ping.h"
+# include "ft_ping.h"
 
-void    input_check(int num, char **arr, t_ping *p) {
-    if (num != 2) {
+void    parse_input(int argc, char **argv, t_ping *p) {
+
+    if (argc < 2 && argc > 3) {
         log_error(WRONG_INPUT);
     }
-    p->hostinfo.hostname = strdup(arr[1]);
-}
-
-void get_hostname_address_info(t_ping *p) {
-    struct addrinfo hints;
-    struct addrinfo *res;
-
-    memset(&hints, 0, sizeof(hints));
-    hints.ai_family = AF_INET,
-    hints.ai_socktype = SOCK_STREAM;
-
-    if (getaddrinfo(p->hostinfo.hostname, NULL, &hints, &res) == 0) {
-        ft_memcpy(&p->hostinfo.inet_addr, res->ai_addr, sizeof(struct sockaddr));
-        inet_ntop(AF_INET, &(p->hostinfo.inet_addr.sin_addr), p->hostinfo.ip_addr, INET_ADDRSTRLEN);
-    } else {
-        log_error("gethostaddrinfo");
+    p->opts.verbose = 0;
+    for (int i = 1; i < argc; i++) {
+        if (ft_strcmp(argv[i], "-?") == 0) {
+            log_help();
+        } else if (ft_strcmp(argv[i], "-v") == 0) {
+            p->opts.verbose = 1;
+        } else {
+            if (argv[i][0] == '-') {
+                log_error(WRONG_INPUT);
+            }
+            p->hostinfo.hostname = ft_strdup(argv[i]); 
+        }
     }
-
+    if (!p->hostinfo.hostname) {
+        log_error(WRONG_INPUT);
+    }
 }
