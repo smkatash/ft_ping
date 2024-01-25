@@ -37,18 +37,19 @@ static ssize_t receive_packet(void *msg, size_t msglen, t_ping *p) {
     hdr.msg_name = p->hostinfo.ip_addr;
 	hdr.msg_iov = &(iov);
 	hdr.msg_iovlen = 1;
-    ret = recvmsg(p->socket, &hdr, 0);
-    if (ret < 0) {
+    // TODO debug here
+    if ((ret = recvmsg(p->socket, &hdr, 0)) < 0) {
+        printf("ret %ld\n", ret);
         log_error(strerror(errno));
     }
     if (gettimeofday(&(p->end_rtt), NULL) == -1) {
         log_error(strerror(errno));
     }
-    if (!valid_response(msg, p)) {
-        log_error(HOST_ERROR);
+    if (valid_response(msg, p)) {
+        ++p->received;
+        return ret;
     }
-    ++p->received;
-    return ret;
+    return -1;
 }
 
 
@@ -58,7 +59,13 @@ void    ping(t_ping *p) {
 
     send_packet(p);
     rbytes = receive_packet(msg, sizeof(msg), p);
-    p->rtt = get_round_trip_time(p->start_rtt, p->end_rtt);
-    log_response(p, msg, rbytes - IP_HDR_SIZE);
+    if (rbytes > 0) {
+        p->rtt = get_round_trip_time(p->start_rtt, p->end_rtt);
+        if (p->opts.verbose) {
+            log_error_verbose(msg, p);
+        } else if (!p->opts.quiet) {
+            log_response(p, msg, rbytes - IP_HDR_SIZE);
+        }
+    }
     save_time_stats(p);
 }

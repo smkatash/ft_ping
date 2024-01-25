@@ -2,8 +2,12 @@
 
 
 static void create_socket(t_ping *p) {
-    p->socket = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP);
-    if (p->socket == -1) {
+    int ttl = IP_TTL_VALUE;
+    if ((p->socket = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP)) == -1) {
+        log_error(strerror(errno));
+    }
+    if (setsockopt(p->socket, IPPROTO_IP, IP_TTL, &ttl, sizeof(ttl)) == -1) {
+        close(p->socket);
         log_error(strerror(errno));
     }
 }
@@ -15,13 +19,13 @@ static  void set_server_hostname(t_ping *p) {
 
     sa.sin_family = AF_INET;
     inet_pton(AF_INET, p->hostinfo.ip_addr, &(sa.sin_addr));
-    ret = getnameinfo((struct sockaddr *)&sa, sizeof(sa), buff, 
-            sizeof(buff), NULL, 0, NI_NAMEREQD);
-    if (ret < 0) {
+    if ((ret = getnameinfo((struct sockaddr *)&sa, sizeof(sa), buff, 
+            sizeof(buff), NULL, 0, NI_NAMEREQD)) == 0) {
+    p->hostinfo.server_hostname = ft_strdup(buff);
+    } else if (ret == -1) {
         close(p->socket);
         log_error(gai_strerror(ret));                      
     }
-    p->hostinfo.server_hostname = ft_strdup(buff);
 }
 
 static void set_hostaddress(t_ping *p) {
@@ -41,13 +45,13 @@ static void set_hostaddress(t_ping *p) {
         inet_ntop(AF_INET, &(p->hostinfo.inet_addr.sin_addr), p->hostinfo.ip_addr, INET_ADDRSTRLEN);
     } else {
         close(p->socket);
-        freeaddrinfo(res);
         log_error(gai_strerror(ret));
     }
     freeaddrinfo(res);
 }
 
 void    init_ping(t_ping *p) {
+    init_stats(p);
     create_socket(p);
     set_hostaddress(p);
     set_server_hostname(p);

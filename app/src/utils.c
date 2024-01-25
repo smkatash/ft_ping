@@ -20,7 +20,7 @@ unsigned short checksum(void *header, int len) {
 
 void    init_stats(t_ping *p) {
     p->seq = 0;
-    p->interval = 1;
+    p->interval = p->opts.wait ? (double)p->opts.wait : 1;
     p->rtt = 0;
     p->min = 0;
     p->max = 0;
@@ -43,8 +43,8 @@ int  valid_response(void *msg, t_ping *p) {
 	icmp = (struct icmphdr *)(msg + (iphdr->ihl * 4));
     if (icmp->type == ICMP_ECHOREPLY && ntohs(icmp->un.echo.id) == p->cpid) {
         return (1);
-    } else if (icmp->type == ICMP_TIME_EXCEEDED && icmp->code == 0) {
-		log_error(TIME_EXCEEDED);
+    } else if (icmp->type != ICMP_ECHOREPLY && p->opts.verbose) {
+		log_icmp(icmp->type, icmp->code);
 	}
 	return (0);
 }

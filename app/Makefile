@@ -6,7 +6,7 @@
 #    By: kanykei <kanykei@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/11 11:19:19 by kanykei           #+#    #+#              #
-#    Updated: 2024/01/21 19:50:41 by kanykei          ###   ########.fr        #
+#    Updated: 2024/01/25 22:59:50 by kanykei          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,7 @@ NAME		:= ft_ping
 
 VPATH		:= src
 
-SRC			:= main.c utils.c logger.c socket.c ping.c time.c parser.c
+SRC			:= main.c utils.c logger.c socket.c ping.c time.c parser.c icmp.c
 
 # ================================ Flags ===================================== #
 OBJ			:= $(addprefix obj/,$(notdir $(SRC:.c=.o)))

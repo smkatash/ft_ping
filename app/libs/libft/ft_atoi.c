@@ -3,39 +3,66 @@
 /*                                                        :::      ::::::::   */
 /*   ft_atoi.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aiarinov <aiarinov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kanykei <kanykei@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 09:24:10 by aiarinov          #+#    #+#             */
-/*   Updated: 2022/04/03 15:27:29 by aiarinov         ###   ########.fr       */
+/*   Updated: 2024/01/25 23:03:30 by kanykei          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
+#include <limits.h>
+
+char	*ft_isspace(char *p)
+{
+	int	i;
+
+	i = 0;
+	while (p[i] == ' ' || p[i] == '\n' || p[i] == '\t' || p[i] == '\v'
+		|| p[i] == '\f' || p[i] == '\r')
+	{
+		i++;
+	}
+	return (p + i);
+}
+
+int	ft_check(char *s, int i)
+{
+	int	neg;
+
+	neg = 1;
+	if (s[i] == '-')
+	{
+		neg *= -1;
+	}
+	return (neg);
+}
 
 int	ft_atoi(const char *str)
 {
-	int	sum;
-	int	sign;
+	int		i;
+	long	num;
+	int		neg;
+	char	*p;
 
-	sum = 0;
-	sign = 1;
-	while (*str == ' ' || *str == '\t' || *str == '\n'
-		|| *str == '\f' || *str == '\r' || *str == '\v')
-		str++;
-	if (*str == '-')
-		sign = -1;
-	if (*str == '-' || *str == '+')
-		str++;
-	while (*str)
+	i = 0;
+	neg = 1;
+	num = 0;
+	p = (char *)str;
+	p = ft_isspace(p);
+	if (p[i] == '-' || p[i] == '+')
 	{
-		if (*str >= '0' && *str <= '9')
-			sum = sum * 10 + *str - '0';
-		else
-			break ;
-		str++;
+		neg = ft_check(p, i);
+		i++;
 	}
-	return (sign * sum);
+	while (p[i] >= '0' && p[i] <= '9')
+	{
+		num = (num * 10) + (p[i] - '0');
+		if (num > 2147483648 && neg == -1)
+			return (0);
+		if (num > INT_MAX && neg == 1)
+			return (-1);
+		i++;
+	}
+	return (num * neg);
 }
-
-//while (*str) while str is true(line 29)
-//0 is 42 in ASCII (line 32)

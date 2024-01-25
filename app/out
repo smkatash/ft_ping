@@ -1,8 +1,0 @@
-PING google.com (142.250.185.238) 56(84) bytes of data.
-64 bytes from fra16s53-in-f14.1e100.net (142.250.185.238): icmp_seq=1 ttl=63 time=39.80 ms
-64 bytes from fra16s53-in-f14.1e100.net (142.250.185.238): icmp_seq=2 ttl=63 time=24.26 ms
-64 bytes from fra16s53-in-f14.1e100.net (142.250.185.238): icmp_seq=3 ttl=63 time=86.02 ms
-
---- google.com ping statistics ---
-3 packets transmitted, 3 received, 0% packet loss, time 3000ms
-rtt min/avg/max/mdev = 24.260/50.024/86.016/7.923 ms

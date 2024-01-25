@@ -6,7 +6,7 @@
 /*   By: kanykei <kanykei@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/11 11:19:58 by kanykei           #+#    #+#             */
-/*   Updated: 2024/01/21 21:18:27 by kanykei          ###   ########.fr       */
+/*   Updated: 2024/01/25 23:53:09 by kanykei          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,19 +30,25 @@
 # include <errno.h>
 # include <math.h>
 # include <limits.h>
+#include <stdbool.h>
 
-# define WRONG_INPUT "usage error: Destination address required"
+# define USAGE_ERROR "usage error: Destination address required"
 # define SOCKET_ERROR "Failed to create a socket"
 # define WRONG_IP_PROTOCOL "Received wrong ip protocol"
 # define TIME_EXCEEDED "ttl exceeded"
 # define HOST_ERROR "host error"
-
+# define HELP "-?"
+# define VERBOSE "-v"
+# define WAIT "-i"
+# define COUNT "-c"
+# define QUIET "-q"
 
 // ip header (20) + icmp header (8) + data (56) = 74 bytes.
 #define IP_TTL_VALUE 64
 #define IP_HDR_SIZE (sizeof(struct iphdr))
 #define ICMP_HDR_SIZE (sizeof(struct icmphdr)) 
 #define ICMP_DATA_SIZE 56
+#define TOTAL_PACKET_SIZE 84
 #define MAX_PACKET_SIZE 1500
 
 /* ICMP Header:
@@ -62,6 +68,9 @@ typedef struct s_host {
 
 typedef struct s_options {
     int    verbose;
+    int    wait;
+    int    count;
+    int    quiet;
 } t_options;
 
 typedef struct s_ping {
@@ -93,7 +102,7 @@ int             valid_response(void *resp, t_ping *p);
 void            wsleep(t_ping *p);
 double          get_round_trip_time(struct timeval start, struct timeval end);
 void            save_time_stats(t_ping *p);
-double          double_sqrt(double a);
+double          mdev(t_ping *p, double avg);
 unsigned short  checksum(void *header, int len);
 void            log_error(const char *err);
 void            log_info(const char *str);
@@ -101,6 +110,8 @@ void            log_header(t_ping *p);
 void            log_stats(t_ping *p);
 void            log_response(t_ping *p, void *msg, int bytes);
 void            log_help();
+void            log_icmp(int type, int code);
+void            log_error_verbose(void *msg, t_ping *p);
 
 
 

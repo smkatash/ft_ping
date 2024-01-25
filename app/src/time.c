@@ -13,7 +13,7 @@ void    save_time_stats(t_ping *p) {
     p->sum2 += p->rtt * p->rtt;
 }
 
-double double_sqrt(double a) {
+static double double_sqrt(double a) {
     double x = a;
     double prev = NAN;
 
@@ -22,6 +22,17 @@ double double_sqrt(double a) {
         x = 0.5 * (x + a / x);
     }
     return x;
+}
+
+double  mdev(t_ping *p, double avg) {
+    double  tvar;
+
+    if (p->sum < INT_MAX) {
+		tvar = (p->sum2 - ((p->sum * p->sum) / p->sum)) / p->sum;
+    } else {
+		tvar = (p->sum2 / p->sum) - (avg * avg);
+    }
+    return double_sqrt(tvar);
 }
 
 void wsleep(t_ping *p) {

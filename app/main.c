@@ -6,7 +6,7 @@
 /*   By: kanykei <kanykei@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/11 11:19:50 by kanykei           #+#    #+#             */
-/*   Updated: 2024/01/21 20:09:08 by kanykei          ###   ########.fr       */
+/*   Updated: 2024/01/26 00:08:44 by kanykei          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,8 @@ static void ping_loop(t_ping *p) {
     while (1) {
         ping(p);
         wsleep(p);
-        if (ping_end) {
+        if (ping_end || (p->opts.count > 0 && \
+        p->opts.count == p->sent)) {
             log_stats(p);
         }
     }
@@ -41,7 +42,11 @@ int main(int argc, char** argv) {
 
     ft_memset(&p, 0, sizeof(t_ping));
     parse_input(argc, argv, &p);
-    init_stats(&p);
+    printf("Verbose %d \n", p.opts.verbose);
+    printf("Quiet %d \n", p.opts.quiet);
+    printf("Wait %d \n", p.opts.wait);
+    printf("Count %d \n", p.opts.count);
+    printf("Address %s \n", p.hostinfo.hostname);
     init_ping(&p);
     ping_loop(&p);
 }
