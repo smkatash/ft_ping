@@ -6,7 +6,7 @@
 /*   By: kanykei <kanykei@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/11 11:19:58 by kanykei           #+#    #+#             */
-/*   Updated: 2024/01/25 23:53:09 by kanykei          ###   ########.fr       */
+/*   Updated: 2024/01/26 16:26:29 by kanykei          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,7 @@
 #include <stdbool.h>
 
 # define USAGE_ERROR "usage error: Destination address required"
-# define SOCKET_ERROR "Failed to create a socket"
 # define WRONG_IP_PROTOCOL "Received wrong ip protocol"
-# define TIME_EXCEEDED "ttl exceeded"
-# define HOST_ERROR "host error"
 # define HELP "-?"
 # define VERBOSE "-v"
 # define WAIT "-i"
@@ -50,6 +47,7 @@
 #define ICMP_DATA_SIZE 56
 #define TOTAL_PACKET_SIZE 84
 #define MAX_PACKET_SIZE 1500
+#define RECV_TIMEOUT_SEC 5
 
 /* ICMP Header:
 - Type (1 byte)
@@ -111,7 +109,7 @@ void            log_stats(t_ping *p);
 void            log_response(t_ping *p, void *msg, int bytes);
 void            log_help();
 void            log_icmp(int type, int code);
-void            log_error_verbose(void *msg, t_ping *p);
+void            log_error_verbose(void *msg);
 
 
 

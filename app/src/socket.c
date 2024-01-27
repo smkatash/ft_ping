@@ -3,10 +3,19 @@
 
 static void create_socket(t_ping *p) {
     int ttl = IP_TTL_VALUE;
+    struct timeval recvtimeout;
+    recvtimeout.tv_sec = RECV_TIMEOUT_SEC;
+    recvtimeout.tv_usec = 0;
+
     if ((p->socket = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP)) == -1) {
         log_error(strerror(errno));
     }
     if (setsockopt(p->socket, IPPROTO_IP, IP_TTL, &ttl, sizeof(ttl)) == -1) {
+        close(p->socket);
+        log_error(strerror(errno));
+    }
+
+    if (setsockopt(p->socket, SOL_SOCKET, SO_RCVTIMEO, &recvtimeout, sizeof(recvtimeout)) == -1) {
         close(p->socket);
         log_error(strerror(errno));
     }
@@ -21,7 +30,7 @@ static  void set_server_hostname(t_ping *p) {
     inet_pton(AF_INET, p->hostinfo.ip_addr, &(sa.sin_addr));
     if ((ret = getnameinfo((struct sockaddr *)&sa, sizeof(sa), buff, 
             sizeof(buff), NULL, 0, NI_NAMEREQD)) == 0) {
-    p->hostinfo.server_hostname = ft_strdup(buff);
+        p->hostinfo.server_hostname = ft_strdup(buff);
     } else if (ret == -1) {
         close(p->socket);
         log_error(gai_strerror(ret));                      

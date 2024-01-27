@@ -43,7 +43,7 @@ int  valid_response(void *msg, t_ping *p) {
 	icmp = (struct icmphdr *)(msg + (iphdr->ihl * 4));
     if (icmp->type == ICMP_ECHOREPLY && ntohs(icmp->un.echo.id) == p->cpid) {
         return (1);
-    } else if (icmp->type != ICMP_ECHOREPLY && p->opts.verbose) {
+    } else if (icmp->type != ICMP_ECHOREPLY && p->opts.verbose && !p->opts.quiet) {
 		log_icmp(icmp->type, icmp->code);
 	}
 	return (0);

@@ -78,9 +78,32 @@ void log_help() {
     exit(EXIT_SUCCESS);
 }
 
-void log_error_verbose(void *msg, t_ping *p) {
-    (void)p;
-    (void)msg;
-    printf("here verbose log\n");
+void log_error_verbose(void *msg) {
+    struct iphdr	*ip;
+    struct icmphdr  *icmp;
+    unsigned char   *buff;
+    char            src[INET_ADDRSTRLEN]; 
+    char            dest[INET_ADDRSTRLEN]; 
+
+    ip = (struct iphdr *)msg;
+    icmp = (struct icmphdr *)(msg + (ip->ihl * 4));
+    buff = (unsigned char *)ip;
+    dprintf(STDOUT_FILENO, "IP Hdr Dump:\n");
+	for (size_t i = 0; i < sizeof(struct iphdr); i += 2) {
+		dprintf(STDOUT_FILENO, " %02x%02x", *buff, *(buff + 1));
+		buff += 2;
+	}
+    inet_ntop(AF_INET, &ip->saddr, src, sizeof(src));
+    inet_ntop(AF_INET, &ip->daddr, dest, sizeof(dest));
+    dprintf(STDOUT_FILENO,"\nVr HL TOS  Len   ID Flg  off TTL Pro  cks      Src    Dst    Data\n");
+    dprintf(STDOUT_FILENO," %x  %x  %02x %04x %04x   %x %04x  %02x  %02x %04x ",
+       ip->version, ip->ihl, ip->tos, ntohs(ip->tot_len),
+       ntohs(ip->id), ntohs(ip->frag_off) >> 13,
+       ntohs(ip->frag_off) & 0x1FFF, ip->ttl, ip->protocol,
+       ntohs(ip->check));
+    dprintf(STDOUT_FILENO,"%s  %s\n", src, dest);
+    dprintf(STDOUT_FILENO,"ICMP: type %x, code %x, size %zu, id %#04x, seq 0x%04x\n",
+       icmp->type, icmp->code, ICMP_DATA_SIZE + sizeof(*icmp),
+       icmp->un.echo.id, icmp->un.echo.sequence);
 }
 
