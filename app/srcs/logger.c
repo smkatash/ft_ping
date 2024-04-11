@@ -29,52 +29,35 @@ void    log_response(t_ping *p, void *msg, int bytes) {
     ttl = (uint16_t)ip->ttl;
     icmp = (struct icmphdr *)(msg + (ip->ihl * 4));
     seq = icmp->un.echo.sequence;
-    if (ft_strcmp(p->hostinfo.hostname, p->hostinfo.ip_addr) == 0) {
-        dprintf(STDOUT_FILENO, "%d bytes from %s: icmp_seq=%u ttl=%u time=%.2lf ms\n", 
-        bytes, p->hostinfo.hostname, ntohs(seq), ttl, p->rtt);
-    } else {
-        if (p->hostinfo.server_hostname) {
-            dprintf(STDOUT_FILENO, "%d bytes from %s (%s): icmp_seq=%u ttl=%u time=%.2lf ms\n", 
-            bytes, p->hostinfo.server_hostname, p->hostinfo.ip_addr, ntohs(seq), ttl, p->rtt);
-        } else {
-            dprintf(STDOUT_FILENO, "%d bytes from %s (%s): icmp_seq=%u ttl=%u time=%.2lf ms\n", 
-            bytes, p->hostinfo.hostname, p->hostinfo.ip_addr, ntohs(seq), ttl, p->rtt);
-        }
-    }
+    dprintf(STDOUT_FILENO, "%d bytes from %s: icmp_seq=%u ttl=%u time=%.2lf ms\n", 
+    bytes, p->hostinfo.ip_addr, ntohs(seq), ttl, p->rtt);
 }
 
 void    log_stats(t_ping *p) {
     int lost;
-    double rtt_ping;
-    struct timeval  end;
     double  avg;
-    
-    if (gettimeofday(&(end), NULL) == -1) {
-        log_error(strerror(errno));
-    }
-    rtt_ping = get_round_trip_time(p->start, end);
+
     lost = 100 - ((p->received * 100) / p->sent);
     dprintf(STDOUT_FILENO, "\n--- %s ping statistics ---\n", p->hostinfo.hostname);
-    dprintf(STDOUT_FILENO, "%d packets transmitted, %d received, %d%% packet loss, time %.0lfms\n", 
-            p->sent, p->received, lost, rtt_ping);
+    dprintf(STDOUT_FILENO, "%d packets transmitted, %d received, %d%% packet loss\n", 
+            p->sent, p->received, lost);
     if (lost != 100) {
         avg = p->sum / p->sent;
-        dprintf(STDOUT_FILENO, "rtt min/avg/max/mdev = %.3lf/%.3lf/%.3lf/%.3lf ms\n", 
+        dprintf(STDOUT_FILENO, "round-trip min/avg/max/stddev = %.3lf/%.3lf/%.3lf/%.3lf ms\n", 
                 p->min,avg, p->max, mdev(p, avg));
     }
-    exit(EXIT_SUCCESS);
 }
 
 
 void log_help() {
-	dprintf(STDOUT_FILENO, "Usage: ping [OPTION...] HOST ...\n"
+	dprintf(STDOUT_FILENO, "Usage: ft_ping [OPTION...] HOST ...\n"
 	       "Send ICMP ECHO_REQUEST packets to network hosts.\n\n"
-	       " Options:\n"
-	       "  -?                 Display a help list.\n"
+	       " Options valid for all request types:\n"
+	       "  -?                 give this help list\n"
 	       "  -v                 Verbose output.\n"
-	       "  -q                 Quiet output.\n"
-	       "  -c <count>         Stop after <count> replies.\n"
-	       "  -i <interval>      Seconds between sending each packet\n");
+	       "  -q                 quiet output\n"
+	       "  -c NUMBER          stop after sending NUMBER packets\n"
+	       "  -i NUMBER          wait NUMBER seconds between sending each packet\n");
     exit(EXIT_SUCCESS);
 }
 

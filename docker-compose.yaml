@@ -4,6 +4,6 @@ services:
   app:
     build: .
     volumes:
-      - /Users/kanykei/Desktop/ft_ping/app:/app
+      - ./app:/app
     command: tail -f /dev/null
     restart: unless-stopped

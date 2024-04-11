@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_bzero.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aiarinov <aiarinov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kanykei <kanykei@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/22 15:50:22 by aiarinov          #+#    #+#             */
-/*   Updated: 2022/03/28 13:20:27 by aiarinov         ###   ########.fr       */
+/*   Created: 2022/03/28 15:14:10 by ktashbae          #+#    #+#             */
+/*   Updated: 2024/04/11 11:47:50 by kanykei          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,25 +15,14 @@
 void	ft_bzero(void *s, size_t n)
 {
 	size_t	i;
-	char	*str;
+	char	*p;
 
 	i = 0;
-	str = (char *)s;
-	while (i < n)
+	p = (char *)s;
+	while (n > 0)
 	{
-		str[i] = 0;
+		p[i] = '\0';
 		i++;
+		n--;
 	}
 }
-
-//till i smaller than n we change the character on 0 (line 24)
-// #include <stdlib.h>
-// #include <string.h>
-
-// int main( void )
-//   {
-//     char *buffer;
-// 	buffer = "fnjnrknkj";
-//     ft_bzero( buffer, 80 );
-//     return (0);
-//   }

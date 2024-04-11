@@ -32,7 +32,7 @@ static  void set_server_hostname(t_ping *p) {
             sizeof(buff), NULL, 0, NI_NAMEREQD)) == 0) {
         p->hostinfo.server_hostname = ft_strdup(buff);
     } else if (ret == -1) {
-        close(p->socket);
+        free_ping(p);
         log_error(gai_strerror(ret));                      
     }
 }
@@ -50,10 +50,13 @@ static void set_hostaddress(t_ping *p) {
     ret = getaddrinfo(p->hostinfo.hostname, NULL, &hints, &res);
     if (ret == 0) {
         ft_memcpy(&p->hostinfo.inet_addr, res->ai_addr, sizeof(struct sockaddr));
-        p->hostinfo.hostname = ft_strdup(res->ai_canonname);
+        if (ft_strcmp(p->hostinfo.hostname, res->ai_canonname) != 0) {
+            free(p->hostinfo.hostname);
+            p->hostinfo.hostname = ft_strdup(res->ai_canonname);
+        }
         inet_ntop(AF_INET, &(p->hostinfo.inet_addr.sin_addr), p->hostinfo.ip_addr, INET_ADDRSTRLEN);
     } else {
-        close(p->socket);
+        free_ping(p);
         log_error(gai_strerror(ret));
     }
     freeaddrinfo(res);

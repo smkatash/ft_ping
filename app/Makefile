@@ -6,7 +6,7 @@
 #    By: kanykei <kanykei@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/11 11:19:19 by kanykei           #+#    #+#              #
-#    Updated: 2024/01/25 22:59:50 by kanykei          ###   ########.fr        #
+#    Updated: 2024/04/11 13:41:17 by kanykei          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ NAME		:= ft_ping
 
 # ================================ Sources =================================== #
 
-VPATH		:= src
+VPATH		:= srcs
 
 SRC			:= main.c utils.c logger.c socket.c ping.c time.c parser.c icmp.c
 
@@ -45,7 +45,7 @@ obj			:
 			mkdir obj
 
 $(LIBFT):
-			- (cd libs/libft && make bonus && make clean)
+			- (cd libs/libft && make && make clean)
 
 clean		:
 			rm -rf obj

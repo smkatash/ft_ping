@@ -21,13 +21,11 @@ int    parse_number(char *str) {
     int num;
 
     if (!str_isdigit(str)) {
-            // TODO find better way to log and free 
-            dprintf(STDERR_FILENO, "ft_ping invalid argument: '%s'", str);
-            exit(EXIT_FAILURE);
+        dprintf(STDERR_FILENO, "ft_ping invalid argument: '%s'", str);
+        exit(EXIT_FAILURE);
     }
     num = ft_atoi(str);
     if (num <= 0) {
-        // TODO find better way to log and free 
         dprintf(STDERR_FILENO, "ft_ping invalid argument: '%s' Numerical result out of range\n", str);
         exit(EXIT_FAILURE);
     }
@@ -37,6 +35,7 @@ int    parse_number(char *str) {
 void    parse_options(int argc, char **argv, t_ping *p) {
     for (int i = 1; i < argc; i++) {
         if (ft_strcmp(argv[i], HELP) == 0) {
+            free_ping(p);
             log_help();
         } else if (ft_strcmp(argv[i], VERBOSE) == 0) {
             p->opts.verbose = 1;
@@ -48,6 +47,7 @@ void    parse_options(int argc, char **argv, t_ping *p) {
                 p->opts.count = parse_number(argv[i]);
                 continue;
             }
+            free_ping(p);
             log_help();
         } else if (ft_strcmp(argv[i], WAIT) == 0) {
             ++i;
@@ -55,6 +55,7 @@ void    parse_options(int argc, char **argv, t_ping *p) {
                 p->opts.wait = parse_number(argv[i]);
                 continue;
             }
+            free_ping(p);
             log_help();
         } else {
             parse_destaddress(argv[i], p);

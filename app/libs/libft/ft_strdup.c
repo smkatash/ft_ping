@@ -3,35 +3,36 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strdup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aiarinov <aiarinov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kanykei <kanykei@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/25 16:09:08 by aiarinov          #+#    #+#             */
-/*   Updated: 2022/03/28 14:55:22 by aiarinov         ###   ########.fr       */
+/*   Created: 2022/03/28 19:33:00 by ktashbae          #+#    #+#             */
+/*   Updated: 2024/04/11 11:52:37 by kanykei          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strdup(const char *str1)
+char	*ft_strdup(const char *src)
 {
-	char	*buf;
-	int		size;
+	size_t	len;
 	int		i;
+	char	*dest;
 
+	len = ft_strlen(src);
+	dest = malloc(len + 1);
 	i = 0;
-	size = ft_strlen(str1);
-	buf = malloc(sizeof(char) * size + 1);
-	if (buf == NULL)
-		return (NULL);
-	while (str1[i])
+	if (dest == 0)
 	{
-		buf[i] = str1[i];
-		i++;
+		return (0);
 	}
-	buf[i] = '\0';
-	return (buf);
+	else
+	{
+		while (src[i])
+		{
+			dest[i] = src[i];
+			i++;
+		}
+		dest[i] = '\0';
+		return (dest);
+	}
 }
-
-//make a copy of str1
-//copy str1 in buf
-//ft_strlcpy (buf, str1, size);

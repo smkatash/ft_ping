@@ -5,13 +5,12 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: kanykei <kanykei@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/25 09:24:10 by aiarinov          #+#    #+#             */
-/*   Updated: 2024/01/25 23:03:30 by kanykei          ###   ########.fr       */
+/*   Created: 2022/03/28 14:41:10 by ktashbae          #+#    #+#             */
+/*   Updated: 2024/04/11 11:48:17 by kanykei          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-#include <limits.h>
 
 char	*ft_isspace(char *p)
 {
@@ -60,7 +59,7 @@ int	ft_atoi(const char *str)
 		num = (num * 10) + (p[i] - '0');
 		if (num > 2147483648 && neg == -1)
 			return (0);
-		if (num > INT_MAX && neg == 1)
+		if (num > 2147483647 && neg == 1)
 			return (-1);
 		i++;
 	}

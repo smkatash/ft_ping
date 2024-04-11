@@ -6,7 +6,7 @@
 /*   By: kanykei <kanykei@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/11 11:19:58 by kanykei           #+#    #+#             */
-/*   Updated: 2024/01/26 16:26:29 by kanykei          ###   ########.fr       */
+/*   Updated: 2024/04/11 13:14:55 by kanykei          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@
 # include <limits.h>
 #include <stdbool.h>
 
-# define USAGE_ERROR "usage error: Destination address required"
+# define USAGE_ERROR "missing host operand\nTry 'ping -?' for more information."
 # define WRONG_IP_PROTOCOL "Received wrong ip protocol"
 # define HELP "-?"
 # define VERBOSE "-v"
@@ -110,6 +110,7 @@ void            log_response(t_ping *p, void *msg, int bytes);
 void            log_help();
 void            log_icmp(int type, int code);
 void            log_error_verbose(void *msg);
+void            free_ping(t_ping *p);
 
 
 

@@ -5,39 +5,25 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: kanykei <kanykei@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/22 15:49:54 by aiarinov          #+#    #+#             */
-/*   Updated: 2022/11/04 21:37:28 by kanykei          ###   ########.fr       */
+/*   Created: 2022/03/28 18:56:36 by ktashbae          #+#    #+#             */
+/*   Updated: 2024/04/11 11:50:14 by kanykei          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	*ft_memset(void *str, int value, size_t size)
+void	*ft_memset(void *b, int c, size_t len)
 {
-	char	*line;
+	int				i;
+	unsigned char	*p;
 
-	line = (char *)str;
-	while (size > 0)
+	i = 0;
+	p = (unsigned char *)b;
+	while (len > 0)
 	{
-		line[size - 1] = value;
-		size--;
+		p[i] = (unsigned char)c;
+		i++;
+		len--;
 	}
-	return (str);
+	return (p - len);
 }
-
-//replace the character with value
-
-// #include <stdio.h>
-// #include <string.h>
-
-// int main () {
-//    char str[50];
-
-//    strcpy(str,"This is string.h library function");
-//    puts(str);
-
-//    ft_memset(str,'$',7);
-//    puts(str);
-
-//    return(0);
-// }

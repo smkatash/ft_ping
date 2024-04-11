@@ -13,14 +13,16 @@ static void    send_packet(t_ping *p) {
     hdr->code = 0;
     hdr->checksum = 0;
     hdr->un.echo.id = htons(p->cpid);
-    hdr->un.echo.sequence = htons(++p->seq);
+    hdr->un.echo.sequence = htons(p->seq++);
     hdr->checksum = checksum(packet, packetlen);
     if (gettimeofday(&(p->start_rtt), NULL) == -1) {
+        free_ping(p);
         log_error(strerror(errno));
     }
     if (sendto(p->socket, &packet, packetlen, 0,
             (const struct sockaddr *)&p->hostinfo.inet_addr,
             sizeof(p->hostinfo.inet_addr)) < 0) {
+                free_ping(p);
                 log_error(strerror(errno));
     }
     ++p->sent;
@@ -32,6 +34,7 @@ static ssize_t receive_packet(void *msg, size_t msglen, t_ping *p) {
     ssize_t         ret;
 
     ft_memset(msg, 0, msglen);
+    ft_memset(&hdr, 0, sizeof(hdr));
     iov.iov_base = msg;
     iov.iov_len = msglen;
     hdr.msg_name = p->hostinfo.ip_addr;
@@ -42,10 +45,12 @@ static ssize_t receive_packet(void *msg, size_t msglen, t_ping *p) {
         if (errno == 11 || errno == EWOULDBLOCK  || errno == EINTR) {
             return (0);
         }
+        free_ping(p);
         log_error(strerror(errno));
     }
 
     if (gettimeofday(&(p->end_rtt), NULL) == -1) {
+        free_ping(p);
         log_error(strerror(errno));
     }
     if (!valid_response(msg, p)) {

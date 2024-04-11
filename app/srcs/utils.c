@@ -38,6 +38,7 @@ int  valid_response(void *msg, t_ping *p) {
 
 	iphdr = (struct iphdr *)msg;
 	if (iphdr->protocol != IPPROTO_ICMP) {
+        free_ping(p);
 		log_error(WRONG_IP_PROTOCOL);
 	}
 	icmp = (struct icmphdr *)(msg + (iphdr->ihl * 4));
@@ -47,4 +48,18 @@ int  valid_response(void *msg, t_ping *p) {
 		log_icmp(icmp->type, icmp->code);
 	}
 	return (0);
+}
+
+void    free_ping(t_ping *p) {
+    if (p->socket) {
+        close(p->socket);
+    }
+    if (p->hostinfo.hostname) {
+        free(p->hostinfo.hostname);
+        p->hostinfo.hostname = NULL;
+    }
+    if (p->hostinfo.server_hostname) {
+        free(p->hostinfo.server_hostname);
+        p->hostinfo.server_hostname = NULL;
+    }
 }
