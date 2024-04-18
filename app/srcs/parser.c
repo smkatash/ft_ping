@@ -1,75 +1,111 @@
-# include "ft_ping.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kanykei <kanykei@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/04/18 15:06:05 by kanykei           #+#    #+#             */
+/*   Updated: 2024/04/18 15:21:51 by kanykei          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
+#include "ft_ping.h"
 
-void    parse_destaddress(char *str, t_ping *p) {
-    if (ft_strlen(str) > 1 && str[0] == '-') {
-        log_error(USAGE_ERROR);
-    }
-    p->hostinfo.hostname = ft_strdup(str);
+void	parse_destaddress(char *str, t_ping *p)
+{
+	if (ft_strlen(str) > 1 && str[0] == '-')
+	{
+		log_error(USAGE_ERROR);
+	}
+	p->hostinfo.hostname = ft_strdup(str);
 }
 
-bool    str_isdigit(char *str) {
-    for (size_t i = 0; i < ft_strlen(str); i++) {
-        if (!ft_isdigit(str[i])) {
-            return false;
-        }
-    }
-    return true;
+bool	str_isdigit(char *str)
+{
+	for (size_t i = 0; i < ft_strlen(str); i++)
+	{
+		if (!ft_isdigit(str[i]))
+		{
+			return (false);
+		}
+	}
+	return (true);
 }
 
-int    parse_number(char *str) {
-    int num;
+int	parse_number(char *str)
+{
+	int	num;
 
-    if (!str_isdigit(str)) {
-        dprintf(STDERR_FILENO, "ft_ping invalid argument: '%s'", str);
-        exit(EXIT_FAILURE);
-    }
-    num = ft_atoi(str);
-    if (num <= 0) {
-        dprintf(STDERR_FILENO, "ft_ping invalid argument: '%s' Numerical result out of range\n", str);
-        exit(EXIT_FAILURE);
-    }
-    return num;
+	if (!str_isdigit(str))
+	{
+		dprintf(STDERR_FILENO, "ft_ping invalid argument: '%s'", str);
+		exit(EXIT_FAILURE);
+	}
+	num = ft_atoi(str);
+	if (num <= 0)
+	{
+		dprintf(STDERR_FILENO, "ft_ping invalid argument: '%s' Numerical result out of range\n", str);
+		exit(EXIT_FAILURE);
+	}
+	return num;
 }
 
-void    parse_options(int argc, char **argv, t_ping *p) {
-    for (int i = 1; i < argc; i++) {
-        if (ft_strcmp(argv[i], HELP) == 0) {
-            free_ping(p);
-            log_help();
-        } else if (ft_strcmp(argv[i], VERBOSE) == 0) {
-            p->opts.verbose = 1;
-        } else if (ft_strcmp(argv[i], QUIET) == 0) {
-            p->opts.quiet = 1;
-        } else if (ft_strcmp(argv[i], COUNT) == 0) {
-            ++i;
-            if (argv[i]) {
-                p->opts.count = parse_number(argv[i]);
-                continue;
-            }
-            free_ping(p);
-            log_help();
-        } else if (ft_strcmp(argv[i], WAIT) == 0) {
-            ++i;
-            if (argv[i]) {
-                p->opts.wait = parse_number(argv[i]);
-                continue;
-            }
-            free_ping(p);
-            log_help();
-        } else {
-            parse_destaddress(argv[i], p);
-        }        
-    }
+void    parse_options(int argc, char **argv, t_ping *p)
+{
+	for (int i = 1; i < argc; i++)
+	{
+		if (ft_strcmp(argv[i], HELP) == 0)
+		{
+			free_ping(p);
+			log_help();
+		}
+		else if (ft_strcmp(argv[i], VERBOSE) == 0)
+		{
+			p->opts.verbose = 1;
+		} 
+		else if (ft_strcmp(argv[i], QUIET) == 0)
+		{
+			p->opts.quiet = 1;
+		}
+		else if (ft_strcmp(argv[i], COUNT) == 0)
+		{
+			++i;
+			if (argv[i])
+			{
+				p->opts.count = parse_number(argv[i]);
+				continue ;
+			}
+			free_ping(p);
+			log_help();
+		} 
+		else if (ft_strcmp(argv[i], WAIT) == 0)
+		{
+			++i;
+			if (argv[i]) {
+				p->opts.wait = parse_number(argv[i]);
+				continue ;
+			}
+			free_ping(p);
+			log_help();
+		}
+		else
+		{
+			parse_destaddress(argv[i], p);
+		}        
+	}
 }
 
-void    parse_input(int argc, char **argv, t_ping *p) {
-    if (argc < 2) {
-        log_error(USAGE_ERROR);
-    }
-    ft_bzero(&(p->opts), sizeof(t_options));
-    parse_options(argc,argv,p);
-    if (!p->hostinfo.hostname) {
-        log_error(USAGE_ERROR);
-    }
+void    parse_input(int argc, char **argv, t_ping *p)
+{
+	if (argc < 2)
+	{
+		log_error(USAGE_ERROR);
+	}
+	ft_bzero(&(p->opts), sizeof(t_options));
+	parse_options(argc,argv,p);
+	if (!p->hostinfo.hostname)
+	{
+		log_error(USAGE_ERROR);
+	}
 }
