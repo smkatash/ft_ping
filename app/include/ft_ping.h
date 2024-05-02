@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_ping.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kanykei <kanykei@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ktashbae <ktashbae@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/11 11:19:58 by kanykei           #+#    #+#             */
-/*   Updated: 2024/04/11 13:14:55 by kanykei          ###   ########.fr       */
+/*   Updated: 2024/05/02 17:57:25 by ktashbae         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ typedef struct s_ping {
     t_host          hostinfo;
     t_options       opts;
     int             seq;
+    int             dupseq;
     uint16_t        cpid;
     double          interval;
     struct timeval  start;

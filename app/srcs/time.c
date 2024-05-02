@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   time.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kanykei <kanykei@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ktashbae <ktashbae@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 15:06:35 by kanykei           #+#    #+#             */
-/*   Updated: 2024/04/18 15:21:03 by kanykei          ###   ########.fr       */
+/*   Updated: 2024/05/02 17:55:46 by ktashbae         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,10 @@ double  mdev(t_ping *p, double avg)
 	else
 	{
 		tvar = (p->sum2 / p->sum) - (avg * avg);
+	}
+	if (tvar < 0)
+	{
+		return (0);
 	}
 	return (double_sqrt(tvar));
 }

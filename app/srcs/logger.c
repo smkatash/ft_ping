@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   logger.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kanykei <kanykei@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ktashbae <ktashbae@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 15:05:55 by kanykei           #+#    #+#             */
-/*   Updated: 2024/04/18 15:16:03 by kanykei          ###   ########.fr       */
+/*   Updated: 2024/05/02 18:00:28 by ktashbae         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,17 @@ void	log_response(t_ping *p, void *msg, int bytes)
 	ttl = (uint16_t)ip->ttl;
 	icmp = (struct icmphdr *)(msg + (ip->ihl * 4));
 	seq = icmp->un.echo.sequence;
-	dprintf(STDOUT_FILENO, "%d bytes from %s: icmp_seq=%u ttl=%u time=%.2lf ms\n", 
-	bytes, p->hostinfo.ip_addr, ntohs(seq), ttl, p->rtt);
+	if (seq == p->dupseq)
+	{
+		dprintf(STDOUT_FILENO, "%d bytes from %s: icmp_seq=%u ttl=%u time=%.2lf ms (DUP!)\n", 
+		bytes, p->hostinfo.ip_addr, ntohs(seq), ttl, p->rtt);
+	}
+	else 
+	{
+		dprintf(STDOUT_FILENO, "%d bytes from %s: icmp_seq=%u ttl=%u time=%.2lf ms\n", 
+		bytes, p->hostinfo.ip_addr, ntohs(seq), ttl, p->rtt);
+	}
+	p->dupseq = icmp->un.echo.sequence;
 }
 
 void	log_stats(t_ping *p)
@@ -107,9 +116,9 @@ void	log_error_verbose(void *msg)
 	   ntohs(ip->frag_off) & 0x1FFF, ip->ttl, ip->protocol,
 	   ntohs(ip->check));
 	dprintf(STDOUT_FILENO,"%s  %s\n", src, dest);
-	dprintf(STDOUT_FILENO,"ICMP: type %x, code %x, size %zu, id %#04x, seq 0x%04x\n",
+	dprintf(STDOUT_FILENO,"ICMP: type %d, code %d, size %zu, id %#04x, seq 0x%04x\n",
 	   icmp->type, icmp->code, ICMP_DATA_SIZE + sizeof(*icmp),
-	   icmp->un.echo.id, icmp->un.echo.sequence);
+	   ntohs(icmp->un.echo.id), ntohs(icmp->un.echo.sequence));
 }
 
 

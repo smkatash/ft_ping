@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kanykei <kanykei@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ktashbae <ktashbae@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 15:06:41 by kanykei           #+#    #+#             */
-/*   Updated: 2024/04/18 15:20:18 by kanykei          ###   ########.fr       */
+/*   Updated: 2024/05/02 18:00:54 by ktashbae         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ unsigned short checksum(void *header, int len)
 void    init_stats(t_ping *p)
 {
 	p->seq = 0;
+	p->dupseq = -1;
 	p->interval = p->opts.wait ? (double)p->opts.wait : 1;
 	p->rtt = 0;
 	p->min = 0;
